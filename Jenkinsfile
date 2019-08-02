@@ -36,13 +36,20 @@ node (label: 'windows'){
 	  	 		 bat "docker run -p 8081:8081 -h restassured --name restassured --net host -m=500m restassured:${env.version} FULL_RUN"
       	     }
 	  bat "docker cp restassured:/test-output ."
-         env.ForEmailPlugin = env.WORKSPACE
+		
+        def config = [:]
+	def subject = config.subject ? config.subject : "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}!"      
+        // Attach buildlog when the build is not successfull
+        def attachLog = (config.attachLog != null) ? config.attachLog : (currentBuild.currentResult != "SUCCESS")
+		
+        env.ForEmailPlugin = env.WORKSPACE
         emailext mimeType: 'text/html',
-	attachLog :true,
+	attachLog :attachLog,
 	compressLog : true,
         body: '${FILE, path="test-output/emailable-report.html"}',
-        subject: currentBuild.currentResult + " : " + env.JOB_NAME,
+        subject: subject,	
         to: 'dhananjaya.k@thinkpalm.com,arun.j@thinkpalm.com,reshmi.g@thinkpalm.com'
+		
           	  
 	   	
         }
