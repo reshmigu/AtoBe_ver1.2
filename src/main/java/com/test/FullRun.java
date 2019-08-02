@@ -39,7 +39,7 @@ public class FullRun {
 	private static final ResourceBundle rb = ResourceBundle.getBundle("application");
 	private static final String BASE_URL = rb.getString("baseUrl");
 	private static final String project_Name = rb.getString("project.name");
-	private static final String project_Id= rb.getString("project.id");
+	//private static final String project_Id= rb.getString("project.id");
 
 	@Test(priority = 0)
 	public void createIssue() throws URISyntaxException {
