@@ -35,14 +35,14 @@ node (label: 'windows'){
       	     else if("${params.modes}" == "FULL_RUN") {
 	  	 		 bat "docker run -p 8081:8081 -h restassured --name restassured --net host -m=500m restassured:${env.version} FULL_RUN"
       	     }
-	   bat "docker container export -o restassured.zip restassured"
+	  bat "docker cp restassured:/test-output ."
          env.ForEmailPlugin = env.WORKSPACE
         emailext mimeType: 'text/html',
 	attachLog :true,
 	compressLog : true,
-        body: '${FILE, path="AtoBeV2/test-output/emailable-report.html"}',
+        body: '${FILE, path="test-output/emailable-report.html"}',
         subject: currentBuild.currentResult + " : " + env.JOB_NAME,
-        to: 'dhananjaya.k@thinkpalm.com'
+        to: 'dhananjaya.k@thinkpalm.com,arun.j@thinkpalm.com'
           	  
 	   	
         }
