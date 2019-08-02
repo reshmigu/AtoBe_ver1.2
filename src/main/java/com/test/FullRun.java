@@ -2,32 +2,28 @@ package com.test;
 
 import static org.testng.Assert.assertEquals;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.Test;
 
 import com.test.xrayapis.CreateIssueDTO;
-import com.test.xrayapis.GenerateJasperReport;
 import com.test.xrayapis.JasperBugDTO;
-import com.test.xrayapis.JasperReportDTO;
 import com.test.xrayapis.ResponseDTO;
 import com.test.xrayapis.TestExecution;
 import com.test.xrayapis.TestRun;
 import com.test.xrayapis.XrayAPIIntegration;
+
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import net.sf.jasperreports.engine.JRException;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 
 public class FullRun {
 	// GET HTTP Protocol which is used to request data from a specific resource
@@ -43,6 +39,8 @@ public class FullRun {
 	private static final ResourceBundle rb = ResourceBundle.getBundle("application");
 	private static final String BASE_URL = rb.getString("baseUrl");
 	private static final String project_Name = rb.getString("project.name");
+	private static final String project_Id= rb.getString("project.id");
+
 	@Test(priority = 0)
 	public void createIssue() throws URISyntaxException {
 		createIssueDTO = new CreateIssueDTO();
@@ -191,7 +189,7 @@ public class FullRun {
 	}
 
 	@AfterSuite
-	public void afterAllTest() throws JRException, URISyntaxException {
+	public void afterAllTest() throws  URISyntaxException {
 		List<TestExecution> testExecution = apiIntegration.getTestExecution(testExecutionid);
 	
 		List<JasperBugDTO> jasperBugDTOList=new ArrayList<>();
@@ -221,7 +219,7 @@ public class FullRun {
 			jasperBugDTO.setTestCaseLink(BASE_URL+"/browse/"+a.getKey());
 			jasperBugDTOList.add(jasperBugDTO);
 		});
-		try {
+		/*try {
 			TestRun response=apiIntegration.getTestRun(testExecution.get(0).getKey(), testExecutionid);
 			GenerateJasperReport generateJasperReport= new GenerateJasperReport();
 			report.sendReportAsExcel(testExecution, testExecutionid);
@@ -236,14 +234,15 @@ public class FullRun {
 			jasperReportDTO.setAssignee("assignee");
 			jasperReportDTO.setExecutedBy(response.getExecutedBy());
 			jasperReportDTO.setIssueIdLink(BASE_URL+"/browse/"+testExecutionid);
+			jasperReportDTO.setXrayReportLink(BASE_URL+"/secure/XrayReport!default.jspa?selectedReportKey=xray-report-testruns&selectedProjectKey="+project_Id+"&filterScope=filter");
 			generateJasperReport.createReport(jasperReportDTO,jasperBugDTOList);
 			
 			mail test1 = new mail();
-			test1.mailm("report.pdf");
+			test1.mailm("report.pdf")
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 }
